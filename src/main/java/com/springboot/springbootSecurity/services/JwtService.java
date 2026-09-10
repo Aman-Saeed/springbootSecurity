@@ -24,7 +24,7 @@ public class JwtService {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         String subject = user.getEmail(); // Use the user's email as the subject of the token
         // Generate a JWT token using the secret key and the subject (e.g., username)
         return Jwts.builder()
@@ -32,7 +32,17 @@ public class JwtService {
                 .claim("email", user.getEmail()) // Add the user's email as a claim
                 .claim("role", Set.of("ADMAIN", "USER")) // Add the user's role as a claim (you can customize this based on your application)
                 .issuedAt(new Date()) // Set the issued date of the token
-                .setExpiration(new Date(System.currentTimeMillis() + 60000)) // Set expiry for one minute
+                .setExpiration(new Date(System.currentTimeMillis() + 60000 * 10)) // Set expiry for one minute
+                .signWith(getSecretKey()) // Sign the token with the secret key
+                .compact();
+    }
+    public String generateRefreshToken(User user) {
+        String subject = user.getEmail(); // Use the user's email as the subject of the token
+        // Generate a JWT token using the secret key and the subject (e.g., username)
+        return Jwts.builder()
+                .setSubject(user.getId().toString()) // Use the user's ID as the subject of the token
+                .issuedAt(new Date()) // Set the issued date of the token
+                .setExpiration(new Date(System.currentTimeMillis() + 10000L * 60*60*24*30*6)) // Set expiry for one minute
                 .signWith(getSecretKey()) // Sign the token with the secret key
                 .compact();
     }
