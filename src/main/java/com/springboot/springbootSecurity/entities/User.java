@@ -29,6 +29,8 @@ public class User implements UserDetails {
     private  String password;
     private  String name;
 
+    private Long subscriptions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

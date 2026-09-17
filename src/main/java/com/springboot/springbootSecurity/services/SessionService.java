@@ -16,12 +16,12 @@ import java.util.List;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
-    private final int SESSION_LIMIT = 2;
+    //private final int SESSION_LIMIT = 2;
 
     public void generateNewSession(User user, String refreshToken) {
 
         List<Session> userSessions = sessionRepository.findByUser(user);
-        if (userSessions.size() == SESSION_LIMIT){
+        if (userSessions.size() == user.getSubscriptions()){
             userSessions.sort(Comparator.comparing(Session::getLastUsedAt));
 
             Session leastRecentlyUsedSession = userSessions.getFirst();
