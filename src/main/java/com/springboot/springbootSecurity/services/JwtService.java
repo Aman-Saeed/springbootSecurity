@@ -11,7 +11,6 @@ import javax.crypto.SecretKey;
 import javax.swing.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 public class JwtService {
@@ -30,7 +29,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getId().toString()) // Use the user's ID as the subject of the token
                 .claim("email", user.getEmail()) // Add the user's email as a claim
-                .claim("role", Set.of("ADMAIN", "USER")) // Add the user's role as a claim (you can customize this based on your application)
+                .claim("role", user.getRoles().toString())
                 .issuedAt(new Date()) // Set the issued date of the token
                 .setExpiration(new Date(System.currentTimeMillis() + 60000 * 10)) // Set expiry for one minute
                 .signWith(getSecretKey()) // Sign the token with the secret key
