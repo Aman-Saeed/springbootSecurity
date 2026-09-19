@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +23,7 @@ import static com.springboot.springbootSecurity.entities.enums.Role.CREATOR;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -38,17 +40,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(PUBLIC_URLS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/posts/**")
-                            .hasAnyRole(ADMIN.name(), CREATOR.name())
-                        .requestMatchers(HttpMethod.POST, "/posts/**")
-                            .hasAnyRole(POST_CREATE.name())
-                        .requestMatchers(HttpMethod.GET, "/posts/**")
-                            .hasAnyRole(POST_VIEW.name())
-                        .requestMatchers(HttpMethod.PUT, "/posts/**")
-                            .hasAnyRole(POST_EDIT.name())
-                        .requestMatchers(HttpMethod.DELETE, "/posts/**")
-                            .hasAnyRole(POST_DELETE.name())
+                        .requestMatchers("/posts/**").authenticated()
                         .anyRequest().authenticated())
                 .csrf(csrf->csrf.disable())
                 .sessionManagement(session->session

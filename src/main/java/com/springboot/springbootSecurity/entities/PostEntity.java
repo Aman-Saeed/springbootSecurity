@@ -21,4 +21,7 @@ public class PostEntity extends AuditableEntity {
     private Long id;
     private String title;
     private String description;
+
+    @ManyToOne
+    private User author;
 }

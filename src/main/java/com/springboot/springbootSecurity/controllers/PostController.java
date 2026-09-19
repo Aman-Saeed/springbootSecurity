@@ -5,6 +5,8 @@ import com.springboot.springbootSecurity.entities.User;
 import com.springboot.springbootSecurity.services.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +21,14 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public List<PostDTO> getAllPosts() {
         return postService.getAllPosts();
     }
 
     @GetMapping("/{postId}")
+    //@PreAuthorize("hasAnyRoles('ROLE_USER', 'ROLE_ADMIN') OR hasAuthority('POST_VIEW')")
+    @PreAuthorize("@postSecurity.isOwnerOfPost(#postId) or hasRole('ROLE_ADMIN')")
     public PostDTO getPostById(@PathVariable Long postId) {
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
